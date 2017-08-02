@@ -480,7 +480,7 @@ def autoload_static(model, resources, script_path):
     return encode_utf8(js), encode_utf8(tag)
 
 
-def _connect_session_or_document(model=None, app_path=None, session_id=None, url="default", relative_urls=False, resources="default", arguments=None):
+def _connect_session_or_document(model=None, session_id=None, url="default", relative_urls=False, resources="default", arguments=None):
     ''' Return a script tag that embeds content from a Bokeh server. This is
     a private method not meant to be called directly. Instead it is meant to be
     called by other methods that thinly wrap around it for different use cases:
@@ -597,12 +597,6 @@ def _connect_session_or_document(model=None, app_path=None, session_id=None, url
     '''
     from .client.session import _encode_query_param
 
-    if app_path is not None:
-        deprecated((0, 12, 5), "app_path", "url", "Now pass entire app URLS in the url arguments, e.g. 'url=http://foo.com:5010/bar/myapp'")
-        if not app_path.startswith("/"):
-            app_path = "/" + app_path
-        url = url + app_path
-
     coords = _SessionCoordinates(url=url, session_id=session_id)
 
     elementid = make_id()
@@ -656,13 +650,13 @@ def _connect_session_or_document(model=None, app_path=None, session_id=None, url
 
 _connect_session_or_document.__doc__ = format_docstring(_connect_session_or_document.__doc__, DEFAULT_SERVER_HTTP_URL=DEFAULT_SERVER_HTTP_URL)
 
-def autoload_server(model=None, app_path=None, session_id=None, url="default", relative_urls=False, arguments=None):
+def autoload_server(model=None, session_id=None, url="default", relative_urls=False, arguments=None):
     ''' Return a script tag that embeds content from a Bokeh server and loads
     all the necessary JS/CSS resource files. Also accepts an optional dictionary
     of arguments to be passed to Bokeh.
     '''
     deprecated((0, 12, 7), 'bokeh.embed.autoload_server', 'bokeh.embed.server_document or bokeh.embed.server_session')
-    return _connect_session_or_document(model=model, app_path=app_path, session_id=session_id, url=url, relative_urls=relative_urls,
+    return _connect_session_or_document(model=model, session_id=session_id, url=url, relative_urls=relative_urls,
                                         resources="default", arguments=arguments)
 
 def server_document(url="default", relative_urls=False, resources="default", arguments=None):
